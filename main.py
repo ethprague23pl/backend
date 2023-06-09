@@ -16,44 +16,42 @@ from config import PROJECT_URL, PUBLIC_API, DATABASE_PSWD
 app = FastAPI()
 
 class Event(BaseModel):
-    LOG.info('cyce')
     name: str
     description: str
-    start_day: datetime
-    start_hour: time
-    finish_day: datetime
-    finish_hour: time
+    start_day: str
+    start_hour: str
+    finish_day: str
+    finish_hour: str
+    event_image: str
+    preview_image: str
 
-def update_db(event: Event, preview_image_url, event_image_url):
-    LOG.info('dupa')
+def insert_db(event_info:dict):
     url: str = PROJECT_URL
     key: str = PUBLIC_API
     supabase: Client = create_client(url, key)  
-
-    supabase.table("events").insert({
-  "name": event.name,
-  "description": event.description,
-  "start_day": event.start_day,
-  "start_hour": event.start_hour,
-  "finish_day": event.finish_day,
-  "finish_hour": event.finish_hour,
-  "preview_image": preview_image_url,
-  "event_image": event_image_url}).execute()
+    supabase.table("events").insert(event_info).execute()
     return {'Msg':'Created good'}
 
 
 @app.post("/create_event")
 async def create_event(event: Event):
-    return {'Git':"Good"}
+    LOG.info(f'{insert_db(event_info=event.dict())}')
+    return {"git":"good"}
 
-@app.post("/upload_image")
+
+@app.post("/upload_event_image")
+def create_picture(first_art: UploadFile = File(...)):
+    """Takes image file, returns url to IPFS Storage"""
+    LOG.info(f"New NFT was initiated")
+    ipfs_url = upload_file_on_ipfs(first_art.file)
+    LOG.info(f"IPFS NTF url: {ipfs_url}")
+    return {"event_image": ipfs_url}
+
+@app.post("/upload_preview_image")
 def create_picture(first_art: UploadFile = File(...)):
     """Takes image file, returns url to IPFS Storage"""
 
     LOG.info(f"New NFT was initiated")
-
     ipfs_url = upload_file_on_ipfs(first_art.file)
-
     LOG.info(f"IPFS NTF url: {ipfs_url}")
-
-    return {"url": ipfs_url}
+    return {"preview_image": ipfs_url}

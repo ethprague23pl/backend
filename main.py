@@ -5,7 +5,7 @@ from loguru import logger as LOG
 import requests as r
 
 from upload_on_ipfs import upload_file_on_ipfs
-from supabase_connection import insert_db, create_user
+from supabase_connection import insert_db, create_user, check_user
 
 app = FastAPI()
 
@@ -51,3 +51,7 @@ def crete_account(user: User):
     create_user(user = user.dict())
     return {"Account":"Created Successfully"}
 
+@app.post("/login")
+def log_to_account(user_email:str, user_password:str):
+    return check_user(user_email=user_email, user_password=user_password)
+    

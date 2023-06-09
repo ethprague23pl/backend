@@ -19,9 +19,7 @@ class Event(BaseModel):
     name: str
     description: str
     start_day: str
-    start_hour: str
     finish_day: str
-    finish_hour: str
     event_image: str
     preview_image: str
 

@@ -7,3 +7,12 @@ def insert_db(event_info:dict):
     supabase: Client = create_client(url, key)  
     supabase.table("events").insert(event_info).execute()
     return {'Msg':'Created good'}
+
+
+def create_user(user:dict):
+    url: str = PROJECT_URL
+    key: str = PUBLIC_API
+    supabase: Client = create_client(url, key)
+
+    supabase.table("user_management").insert(user).execute()
+    return {"User": "Added succesfully"}

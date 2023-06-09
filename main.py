@@ -5,7 +5,7 @@ from loguru import logger as LOG
 import requests as r
 
 from upload_on_ipfs import upload_file_on_ipfs
-from supabase_connection import insert_db
+from supabase_connection import insert_db, create_user
 
 app = FastAPI()
 
@@ -17,6 +17,10 @@ class Event(BaseModel):
     event_image: str
     preview_image: str
 
+class User(BaseModel):
+    user_email: str
+    user_name: str
+    user_password: str
 
 
 @app.post("/create_event")
@@ -41,3 +45,9 @@ def create_picture(second_art: UploadFile = File(...)):
     ipfs_url = upload_file_on_ipfs(second_art.file)
     LOG.info(f"IPFS NTF url: {ipfs_url}")
     return {"preview_image": ipfs_url}
+
+@app.post("/create_account")
+def crete_account(user: User):
+    create_user(user = user.dict())
+    return {"Account":"Created Successfully"}
+

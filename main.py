@@ -34,10 +34,10 @@ def create_picture(first_art: UploadFile = File(...)):
     return {"event_image": ipfs_url}
 
 @app.post("/upload_preview_image")
-def create_picture(first_art: UploadFile = File(...)):
+def create_picture(second_art: UploadFile = File(...)):
     """Takes image file, returns url to IPFS Storage"""
 
     LOG.info(f"New NFT was initiated")
-    ipfs_url = upload_file_on_ipfs(first_art.file)
+    ipfs_url = upload_file_on_ipfs(second_art.file)
     LOG.info(f"IPFS NTF url: {ipfs_url}")
     return {"preview_image": ipfs_url}

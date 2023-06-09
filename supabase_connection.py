@@ -1,14 +1,9 @@
 from supabase import create_client, Client
-import json
-import io
-import requests as r 
+from config import PROJECT_URL, PUBLIC_API
 
-from PIL import Image
-from config import PROJECT_URL, PUBLIC_API, DATABASE_PSWD, NFT_STORAGE_API
-from loguru import logger as LOG
-
-def db_client():
+def insert_db(event_info:dict):
     url: str = PROJECT_URL
     key: str = PUBLIC_API
-    supabase: Client = create_client(url, key)
-    return supabase
+    supabase: Client = create_client(url, key)  
+    supabase.table("events").insert(event_info).execute()
+    return {'Msg':'Created good'}

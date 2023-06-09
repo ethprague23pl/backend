@@ -1,17 +1,11 @@
-from supabase import client
-
 from fastapi import FastAPI, UploadFile, File
 from pydantic import BaseModel
-from supabase import create_client, Client
 from loguru import logger as LOG
-from datetime import datetime, time
 
 import requests as r
 
 from upload_on_ipfs import upload_file_on_ipfs
-from config import PROJECT_URL, PUBLIC_API, DATABASE_PSWD
-
-
+from supabase_connection import insert_db
 
 app = FastAPI()
 
@@ -23,12 +17,6 @@ class Event(BaseModel):
     event_image: str
     preview_image: str
 
-def insert_db(event_info:dict):
-    url: str = PROJECT_URL
-    key: str = PUBLIC_API
-    supabase: Client = create_client(url, key)  
-    supabase.table("events").insert(event_info).execute()
-    return {'Msg':'Created good'}
 
 
 @app.post("/create_event")

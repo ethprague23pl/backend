@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from loguru import logger as LOG
 from typing import List
 from upload_on_ipfs import upload_file_on_ipfs
-from supabase_connection import insert_db, create_user, log_in, LoginResponse, get_events
+from supabase_connection import insert_db, create_user, log_in, LoginResponse, get_events, get_private_key
 from node_connection import post_call, get_call
 from config import BASE_URL
 base_url = BASE_URL
@@ -50,7 +50,20 @@ class User(BaseModel):
     wallet_address: str
     wallet_private_key: str 
 
+class BuyTicket(BaseModel):
+    jwt_token: str
+    ticketQuantity: int
+    eventContactAddress: str
+    privateKey: str
+
 # POST
+
+@app.post('/ticket', response_model=str)
+async def buy_ticket(ticket: BuyTicket):
+    BuyTicket.privateKey = get_private_key(BuyTicket.jwt_token)
+    return post_call('/ticket', body = BuyTicket.dict(),header={'Content-Type': 'application/json'}, base_url=base_url)
+
+
 @app.post("/event", response_model=dict)
 async def create_event(event: Event):
     event.contract_address = next(iter(post_call(endpoint='/event', body={"ticketQuantity": event.ticket_quantity, "ticketPrice":event.ticket_price}, header={'Content-Type': 'application/json'}, base_url=base_url).values()))

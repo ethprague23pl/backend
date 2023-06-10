@@ -16,3 +16,6 @@ def generate_jwt_token(username: str) -> str:
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     return token
 
+def encode_jwt_token(jwt_token:str) -> str:
+    user_name = jwt.decode(jwt_token, JWT_SECRET, algorithms=JWT_ALGORITHM)
+    return user_name['username']

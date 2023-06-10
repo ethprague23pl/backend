@@ -1,8 +1,7 @@
 from supabase import create_client, Client
 
 from config import PROJECT_URL, PUBLIC_API, BASE_URL
-from user_security import hashpassword, generate_jwt_token
-from node_connection import post_call, get_call
+from user_security import hashpassword, generate_jwt_token, encode_jwt_token
 from pydantic import BaseModel
 
 class LoginResponse(BaseModel):
@@ -36,6 +35,15 @@ def fetch_user(user_email:str):
     
     response = supabase.table("user_management").select("*").eq("user_email",f"{user_email}").execute()
     return response
+
+def get_private_key(jwt_token:str) ->str:
+    for data in fetch_user(user_email=encode_jwt_token(jwt_token=jwt_token)):
+        if type(data[1]) == list:
+            for key, value in data[1][0].items():
+                if key == "wallet_private_key":
+                    return value
+
+#print(get_private_key('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdGlAZ21haWwuY29tIiwiZXhwIjoxNzE3OTU2NTg2fQ.jlImOo6wdOqbototc3xd_VnK03jWch9vw5R0Xl9kr0g'))
 
 def log_in(user_email:str, user_password:str) -> LoginResponse :
     for data in fetch_user(user_email=user_email):

@@ -6,6 +6,9 @@ from loguru import logger as LOG
 from typing import List
 from upload_on_ipfs import upload_file_on_ipfs
 from supabase_connection import insert_db, create_user, log_in, LoginResponse, get_events
+from node_connection import post_call, get_call
+from config import BASE_URL
+base_url = BASE_URL
 app = FastAPI()
 
 origins = [
@@ -42,6 +45,8 @@ class User(BaseModel):
     user_email: str
     user_name: str
     user_password: str
+    wallet_address: str
+    wallet_private_key: str 
 
 # POST
 @app.post("/event", response_model=dict)
@@ -57,7 +62,8 @@ def create_picture(second_art: UploadFile = File(...)):
     return ipfs_url
 
 @app.post("/account", response_model=LoginResponse)
-def crete_account(user: User):
+def crete_account(user: User):    
+    user.wallet_address, user.wallet_private_key = get_call(endpoint="/account", header={'Content-Type': 'application/json'}, base_url=BASE_URL).values()
     return create_user(user = user.dict())
     
 
@@ -74,3 +80,4 @@ def get_event():
 @app.get("/")
 def root():
     return {'working':'hard'}
+

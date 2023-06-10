@@ -1,8 +1,8 @@
 from supabase import create_client, Client
 
-from config import PROJECT_URL, PUBLIC_API
+from config import PROJECT_URL, PUBLIC_API, BASE_URL
 from user_security import hashpassword, generate_jwt_token
-
+from node_connection import post_call, get_call
 from pydantic import BaseModel
 
 class LoginResponse(BaseModel):
@@ -17,13 +17,18 @@ def insert_db(event_info:dict):
 
 
 def create_user(user:dict):
-    url: str = PROJECT_URL
-    key: str = PUBLIC_API
-    supabase: Client = create_client(url, key)
-    generate_jwt_token(user['user_email'])
-    user['user_password'] = hashpassword(user['user_password'])
-    supabase.table("user_management").insert(user).execute()
-    return {"accessToken": f"{generate_jwt_token(user['user_email'])}"}
+    try:
+        url: str = PROJECT_URL
+        key: str = PUBLIC_API
+        supabase: Client = create_client(url, key)
+        generate_jwt_token(user['user_email'])
+        user['user_password'] = hashpassword(user['user_password'])
+        #user['wallet_address'], user['wallet_private_key'] = get_call(endpoint="/account", header={'Content-Type': 'application/json'}, base_url=BASE_URL)
+        supabase.table("user_management").insert(user).execute()
+        return {"accessToken": f"{generate_jwt_token(user['user_email'])}"}
+    except ValueError:
+        return ValueError
+                
 
 def fetch_user(user_email:str):
     url: str = PROJECT_URL

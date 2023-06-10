@@ -45,4 +45,4 @@ ticket_body={
 #print(asd)
 # get_call(endpoint="/account", header={'Content-Type': 'application/json'}, base_url=BASE_URL)
 #print(user)
-print(post_call(endpoint="/ticket", body=ticket_body, header=header, base_url=base_url))
+#print(post_call(endpoint="/ticket", body=ticket_body, header=header, base_url=base_url))

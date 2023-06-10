@@ -46,6 +46,7 @@ class User(BaseModel):
 # POST
 @app.post("/event", response_model=dict)
 async def create_event(event: Event):
+    insert_db(event_info=event.dict())
     LOG.info(f'{insert_db(event_info=event.dict())}')
     return {"git":"good"}
 
@@ -65,6 +66,7 @@ def log_to_account(user_email:str, user_password:str):
     return log_in(user_email=user_email, user_password=user_password)
 
 
+# GET
 @app.get("/event")
 def get_event():
     return get_events()

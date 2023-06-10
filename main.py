@@ -69,8 +69,8 @@ async def buy_ticket(ticket: BuyTicket):
     "eventContactAddress": ticket.eventContactAddress,
     "privateKey": get_private_key(ticket.jwt_token)
     }
-    return post_call(endpoint='/ticket', body = ticket_body,header={'Content-Type': 'application/json'}, base_url=base_url)
-     
+    post_call(endpoint='/ticket', body = ticket_body,header={'Content-Type': 'application/json'}, base_url=base_url)
+    return {"git":"good2"} 
 
 @app.post("/event", response_model=dict)
 async def create_event(event: Event):

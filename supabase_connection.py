@@ -52,4 +52,4 @@ def get_events():
     supabase: Client = create_client(url, key)
 
     response = supabase.table("events").select("*").execute()
-    return response
+    return response.data

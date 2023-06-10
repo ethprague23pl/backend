@@ -67,7 +67,7 @@ def log_to_account(user_email:str, user_password:str):
 
 
 # GET
-@app.get("/event")
+@app.get("/event", response_model=Event)
 def get_event():
     return get_events()
 

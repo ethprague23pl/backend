@@ -100,11 +100,11 @@ def log_to_account(user_email:str, user_password:str):
 def get_ticket():
     ticket= [
         {
-            "contract": "0x",
+            "contract_addres_event": "0x",
             "ticket_id": 1
         },
         {
-            "contract": "0x",
+            "contract_addres_event": "0x",
             "ticket_id": 3
         }
     ]

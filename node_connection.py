@@ -8,21 +8,23 @@ event_endpoint = "/event"
 ticket_endpoint = "/ticket"
 
 
-def post_call(endpoint:str, body:dict, header:dict, base_url: str) -> dict:
+def post_call(endpoint:str, body:dict, header:dict, base_url: str):
     url = base_url + endpoint
     response = r.post(url, json = body, headers=header)
-    if response.status_code == 200:
-        return(response.json())
-    else:
-        raise TypeError
+    return(response.json())
+    # if response.status_code == 200:
+    #     return(response.json())
+    # else:
+    #     raise TypeError
 
-def get_call(endpoint:str, header:dict, base_url: str) -> dict:
+def get_call(endpoint:str, header:dict, base_url: str):
     url = base_url + endpoint
     response = r.get(url, headers=header)
-    if response.status_code == 200:
-        return(response.json())
-    else:
-        raise TypeError
+    return(response.json())
+    # if response.status_code == 200:
+    #     return(response.json())
+    # else:
+    #     raise TypeError
 
 header={
     'Content-Type': 'application/json'    

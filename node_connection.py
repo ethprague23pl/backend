@@ -16,6 +16,10 @@ def post_call(endpoint:str, body:dict, header:dict, base_url: str):
     #     return(response.json())
     # else:
     #     raise TypeError
+def post_call_ticket(endpoint:str, body:dict, header:dict, base_url: str):
+    url = base_url + endpoint
+    r.post(url, json = body, headers=header)
+    
 
 def get_call(endpoint:str, header:dict, base_url: str):
     url = base_url + endpoint

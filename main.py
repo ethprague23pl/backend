@@ -6,7 +6,7 @@ from loguru import logger as LOG
 from typing import List
 from upload_on_ipfs import upload_file_on_ipfs
 from supabase_connection import insert_db, create_user, log_in, LoginResponse, get_events, get_private_key
-from node_connection import post_call, get_call
+from node_connection import post_call, get_call, post_call_ticket
 from config import BASE_URL
 base_url = BASE_URL
 app = FastAPI()
@@ -69,7 +69,7 @@ async def buy_ticket(ticket: BuyTicket):
     "eventContactAddress": ticket.eventContactAddress,
     "privateKey": get_private_key(ticket.jwt_token)
     }
-    post_call(endpoint='/ticket', body = ticket_body,header={'Content-Type': 'application/json'}, base_url=base_url)
+    post_call_ticket(endpoint='/ticket', body = ticket_body,header={'Content-Type': 'application/json'}, base_url=base_url)
     return {"git":"good2"} 
 
 @app.post("/event", response_model=dict)

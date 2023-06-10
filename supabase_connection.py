@@ -47,7 +47,6 @@ def get_private_key(jwt_token:str) ->str:
 def log_in(user_email:str, user_password:str) -> LoginResponse :
     for data in fetch_user(user_email=user_email):
         if type(data[1]) == list:
-            print(hashpassword(user_password))
             if data[1][0]['user_password'] == None:
                 continue
             elif data[1][0]['user_password'] == hashpassword(user_password):

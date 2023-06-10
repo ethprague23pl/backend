@@ -34,9 +34,9 @@ event = {
 }
 
 ticket_body={
-    'ticketQuantity': 1,
-    'eventContractAddress': '0x00324B1eb4D2fd83cc730cA82f54F9DC7dCd8611',
-    'privateKey': get_private_key('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdGkzQGdtYWlsLmNvbSIsImV4cCI6MTcxNzk2MTIwMn0.tS1_iUQ9iKSe2Oxoiotp7GDEs2HJkhBZuhVIZKL_Rts')
+  "ticketQuantity": 1,
+  "eventContactAddress": "0x00324B1eb4D2fd83cc730cA82f54F9DC7dCd8611 ",
+  "privateKey": get_private_key("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdGkzM0BnbWFpbC5jb20iLCJleHAiOjE3MTc5Njk2NDV9.BG-evZkQ8wz94rfeRq7nf4ppytixf2Lrrr9OFMBXxyM")
 }
 
 

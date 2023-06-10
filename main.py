@@ -56,13 +56,21 @@ class BuyTicket(BaseModel):
     eventContactAddress: str
     privateKey: str
 
+class Ticket(BaseModel):
+    contract_addres_event: str
+    ticket_id: int
+
 # POST
 
-@app.post('/ticket', response_model=str)
+@app.post('/ticket')
 async def buy_ticket(ticket: BuyTicket):
-    BuyTicket.privateKey = get_private_key(BuyTicket.jwt_token)
-    return post_call('/ticket', body = BuyTicket.dict(),header={'Content-Type': 'application/json'}, base_url=base_url)
-
+    ticket_body={
+    "ticketQuantity": ticket.ticketQuantity,
+    "eventContactAddress": ticket.eventContactAddress,
+    "privateKey": get_private_key(ticket.jwt_token)
+    }
+    return post_call(endpoint='/ticket', body = ticket_body,header={'Content-Type': 'application/json'}, base_url=base_url)
+     
 
 @app.post("/event", response_model=dict)
 async def create_event(event: Event):
@@ -88,6 +96,20 @@ def log_to_account(user_email:str, user_password:str):
 
 
 # GET
+@app.get('/ticket', response_model=List[Ticket])
+def get_ticket():
+    ticket= [
+        {
+            "contract": "0x",
+            "ticket_id": 1
+        },
+        {
+            "contract": "0x",
+            "ticket_id": 3
+        }
+    ]
+    return ticket
+
 @app.get("/event", response_model=List[Event])
 def get_event():
     return get_events()

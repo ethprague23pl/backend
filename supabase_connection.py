@@ -23,7 +23,6 @@ def create_user(user:dict):
         supabase: Client = create_client(url, key)
         generate_jwt_token(user['user_email'])
         user['user_password'] = hashpassword(user['user_password'])
-        #user['wallet_address'], user['wallet_private_key'] = get_call(endpoint="/account", header={'Content-Type': 'application/json'}, base_url=BASE_URL)
         supabase.table("user_management").insert(user).execute()
         return {"accessToken": f"{generate_jwt_token(user['user_email'])}"}
     except ValueError:
@@ -44,8 +43,6 @@ def log_in(user_email:str, user_password:str) -> LoginResponse :
             print(hashpassword(user_password))
             if data[1][0]['user_password'] == None:
                 continue
-            # TODO
-            # Jeżeli nie ma użytkownika, lub użytkownik wpisał złe hasło, return error bad password or user not found
             elif data[1][0]['user_password'] == hashpassword(user_password):
                return {"accessToken": f"{generate_jwt_token(user_email)}"}
             else:

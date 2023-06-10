@@ -39,7 +39,9 @@ class Event(BaseModel):
     preview_image: str
     contract_address: str
     ticket_quantity:int
-    ticket_price:float
+    ticket_price: int
+    # TODO
+    # fix ticket_price more than 0 
 
 class User(BaseModel):
     user_email: str
@@ -51,8 +53,8 @@ class User(BaseModel):
 # POST
 @app.post("/event", response_model=dict)
 async def create_event(event: Event):
+    event.contract_address = next(iter(post_call(endpoint='/event', body={"ticketQuantity": event.ticket_quantity, "ticketPrice":event.ticket_price}, header={'Content-Type': 'application/json'}, base_url=base_url).values()))
     insert_db(event_info=event.dict())
-    LOG.info(f'{insert_db(event_info=event.dict())}')
     return {"git":"good"}
 
 @app.post("/image", response_model=str)

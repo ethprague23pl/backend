@@ -8,7 +8,7 @@ event_endpoint = "/event"
 ticket_endpoint = "/ticket"
 
 
-def post_call(endpoint:str, body:dict, header:dict, base_url: str):
+def post_call(endpoint:str, body:dict, header:dict, base_url: str) -> dict:
     url = base_url + endpoint
     response = r.post(url, json = body, headers=header)
     if response.status_code == 200:
@@ -28,18 +28,13 @@ header={
     'Content-Type': 'application/json'    
 }
 
-account = {
-    "wallet_address":"16:37"
-}
-
 event = {
     "ticketQuantity": 100,
     "ticketPrice": 0
 }
-user = {
 
-}
-print(get_call(endpoint=acconut_endpoint, header=header, base_url=base_url))
-#print(post_call(endpoint=event_endpoint, body=event, header=header, base_url=base_url))
+#print(get_call(endpoint=acconut_endpoint, header=header, base_url=base_url).values())
+#print(next(iter(post_call(endpoint=event_endpoint, body=event, header=header, base_url=base_url).values())))
+#print(asd)
 # get_call(endpoint="/account", header={'Content-Type': 'application/json'}, base_url=BASE_URL)
 #print(user)

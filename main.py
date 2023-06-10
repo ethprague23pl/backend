@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
 from loguru import logger as LOG
-
+from typing import List
 from upload_on_ipfs import upload_file_on_ipfs
 from supabase_connection import insert_db, create_user, log_in, LoginResponse, get_events
 app = FastAPI()
@@ -67,7 +67,7 @@ def log_to_account(user_email:str, user_password:str):
 
 
 # GET
-@app.get("/event", response_model=Event)
+@app.get("/event", response_model=List[Event])
 def get_event():
     return get_events()
 

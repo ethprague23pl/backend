@@ -11,6 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 base_url = BASE_URL
 header = HEADER
 
+app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
@@ -18,7 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app = FastAPI()
 
 class Event(BaseModel):
     name: str

@@ -6,9 +6,17 @@ from upload_on_ipfs import upload_file_on_ipfs
 from supabase_connection import insert_db, create_user, log_in, LoginResponse, get_events, get_private_key
 from node_connection import post_call, get_call, get_call_params
 from config import BASE_URL, HEADER
+from fastapi.middleware.cors import CORSMiddleware
 
 base_url = BASE_URL
 header = HEADER
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app = FastAPI()
 

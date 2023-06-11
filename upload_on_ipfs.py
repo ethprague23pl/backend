@@ -1,7 +1,5 @@
 import requests as r
-from io import BytesIO
 from loguru import logger as LOG
-from PIL import Image
 from config import NFT_STORAGE_API
 
 

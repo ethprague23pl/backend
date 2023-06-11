@@ -12,3 +12,4 @@ JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 JWT_EXP_TIME = os.getenv("JWT_EXPIRATION_TIME_MINUTES")
 SALT = os.getenv("SALT")
 BASE_URL = os.getenv("BASE_URL")
+HEADER ={'Content-Type': 'application/json'}

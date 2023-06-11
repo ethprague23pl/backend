@@ -5,38 +5,12 @@ from typing import List
 from upload_on_ipfs import upload_file_on_ipfs
 from supabase_connection import insert_db, create_user, log_in, LoginResponse, get_events, get_private_key
 from node_connection import post_call, get_call, get_call_params
-from config import BASE_URL
-from requests import Response
-
-from starlette.middleware.cors import CORSMiddleware
-
+from config import BASE_URL, HEADER
 
 base_url = BASE_URL
-
-header={'Content-Type': 'application/json'}
+header = HEADER
 
 app = FastAPI()
-
-origins = [
-    # "http://localhost.tiangolo.com",
-    # "https://localhost.tiangolo.com",
-    # "http://localhost",
-    # "http://localhost:8080",
-    # "http://localhost:3000"
-    # "*",
-    # "http://localhost:19000",
-    # "ticketex2-production.up.railway.app",
-    'https://front-brown-one.vercel.app/'
-    # "https://ticketex2-production.up.railway.app",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # Allows all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
-)
 
 class Event(BaseModel):
     name: str
@@ -47,9 +21,7 @@ class Event(BaseModel):
     preview_image: str
     contract_address: str
     ticket_quantity:int
-    ticket_price: int
-    # TODO
-    # fix ticket_price more than 0 
+    ticket_price: int 
 
 class User(BaseModel):
     user_email: str
@@ -112,11 +84,11 @@ async def buy_ticket(ticket: BuyTicket):
     "eventContractAddress": ticket.eventContractAddress,
     "privateKey": get_private_key(ticket.jwt_token)
     }
-    return post_call(endpoint='/ticket', body = ticket_body,header={'Content-Type': 'application/json'}, base_url=base_url) 
+    return post_call(endpoint='/ticket', body = ticket_body,header=header, base_url=base_url) 
 
 @app.post("/event", response_model=dict)
 async def create_event(event: Event):
-    event.contract_address = next(iter(post_call(endpoint='/event', body={"ticketQuantity": event.ticket_quantity, "ticketPrice":event.ticket_price}, header={'Content-Type': 'application/json'}, base_url=base_url).values()))
+    event.contract_address = next(iter(post_call(endpoint='/event', body={"ticketQuantity": event.ticket_quantity, "ticketPrice":event.ticket_price}, header=header, base_url=base_url).values()))
     insert_db(event_info=event.dict())
     return {"addres":event.contract_address}
 
@@ -128,7 +100,7 @@ async def create_picture(second_art: UploadFile = File(...)):
 
 @app.post("/account", response_model=LoginResponse)
 async def crete_account(user: User):    
-    user.wallet_address, user.wallet_private_key = get_call(endpoint="/account", header={'Content-Type': 'application/json'}, base_url=BASE_URL).values()
+    user.wallet_address, user.wallet_private_key = get_call(endpoint="/account", header=header, base_url=BASE_URL).values()
     return create_user(user = user.dict())
     
 

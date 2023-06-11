@@ -1,6 +1,6 @@
 from supabase import create_client, Client
 
-from config import PROJECT_URL, PUBLIC_API, BASE_URL
+from config import PROJECT_URL, PUBLIC_API
 from user_security import hashpassword, generate_jwt_token, encode_jwt_token
 from pydantic import BaseModel
 

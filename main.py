@@ -61,7 +61,7 @@ class User(BaseModel):
 class BuyTicket(BaseModel):
     jwt_token: str
     ticketQuantity: int
-    eventContactAddress: str
+    eventContractAddress: str
     privateKey: str
 
 class Ticket(BaseModel):
@@ -74,7 +74,7 @@ class Ticket(BaseModel):
 async def buy_ticket(ticket: BuyTicket):
     ticket_body={
     "ticketQuantity": ticket.ticketQuantity,
-    "eventContactAddress": ticket.eventContactAddress,
+    "eventContractAddress": ticket.eventContractAddress,
     "privateKey": get_private_key(ticket.jwt_token)
     }
     return post_call(endpoint='/ticket', body = ticket_body,header={'Content-Type': 'application/json'}, base_url=base_url) 

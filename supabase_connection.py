@@ -42,7 +42,7 @@ def get_private_key(jwt_token:str) ->str:
             for key, value in data[1][0].items():
                 if key == "wallet_private_key":
                     return value
-
+    
 
 def log_in(user_email:str, user_password:str) -> LoginResponse :
     for data in fetch_user(user_email=user_email):

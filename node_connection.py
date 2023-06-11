@@ -23,7 +23,16 @@ def get_call(endpoint:str, header:dict, base_url: str) -> dict:
         return(response.json())
     else:
         raise TypeError
-
+    
+def get_call_params(endpoint:str, params, base_url:str):
+    url = base_url + endpoint
+    params = params
+    response = r.get(url, params=params)
+    if response.status_code == 200:
+        return (response.json())
+    else:
+        return {'fail':'big'}
+    
 header={
     'Content-Type': 'application/json'    
 }
@@ -33,11 +42,6 @@ event = {
     "ticketPrice": 0
 }
 
-ticket_body={
-  "ticketQuantity": 1,
-  "eventContactAddress": "0x00324B1eb4D2fd83cc730cA82f54F9DC7dCd8611 ",
-  "privateKey": get_private_key("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdGkzM0BnbWFpbC5jb20iLCJleHAiOjE3MTc5Njk2NDV9.BG-evZkQ8wz94rfeRq7nf4ppytixf2Lrrr9OFMBXxyM")
-}
 
 
 #print(get_call(endpoint=acconut_endpoint, header=header, base_url=base_url).values())

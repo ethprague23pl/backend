@@ -1,25 +1,33 @@
 from fastapi import FastAPI, UploadFile, File
-from fastapi.middleware.cors import CORSMiddleware
-
 from pydantic import BaseModel
 from loguru import logger as LOG
 from typing import List
 from upload_on_ipfs import upload_file_on_ipfs
 from supabase_connection import insert_db, create_user, log_in, LoginResponse, get_events, get_private_key
-from node_connection import post_call, get_call
+from node_connection import post_call, get_call, get_call_params
 from config import BASE_URL
+from requests import Response
+
+from starlette.middleware.cors import CORSMiddleware
+
+
 base_url = BASE_URL
+
+header={'Content-Type': 'application/json'}
+
 app = FastAPI()
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
-    "*",
-    "http://localhost:19000/",
-    "ticketex2-production.up.railway.app",
-    "https://ticketex2-production.up.railway.app",
+    # "http://localhost.tiangolo.com",
+    # "https://localhost.tiangolo.com",
+    # "http://localhost",
+    # "http://localhost:8080",
+    # "http://localhost:3000"
+    # "*",
+    # "http://localhost:19000",
+    # "ticketex2-production.up.railway.app",
+    'https://front-brown-one.vercel.app/'
+    # "https://ticketex2-production.up.railway.app",
 ]
 
 app.add_middleware(
@@ -57,8 +65,8 @@ class BuyTicket(BaseModel):
     privateKey: str
 
 class Ticket(BaseModel):
-    contract_addres_event: str
-    ticket_id: int
+    eventContractAddress: str
+    walletPrivateKey: str
 
 # POST
 
@@ -75,7 +83,7 @@ async def buy_ticket(ticket: BuyTicket):
 async def create_event(event: Event):
     event.contract_address = next(iter(post_call(endpoint='/event', body={"ticketQuantity": event.ticket_quantity, "ticketPrice":event.ticket_price}, header={'Content-Type': 'application/json'}, base_url=base_url).values()))
     insert_db(event_info=event.dict())
-    return {"git":"good"}
+    return {"addres":event.contract_address}
 
 @app.post("/image", response_model=str)
 def create_picture(second_art: UploadFile = File(...)):
@@ -95,19 +103,13 @@ def log_to_account(user_email:str, user_password:str):
 
 
 # GET
-@app.get('/ticket', response_model=List[Ticket])
-def get_ticket():
-    ticket= [
-        {
-            "contract_addres_event": "0x",
-            "ticket_id": 1
-        },
-        {
-            "contract_addres_event": "0x",
-            "ticket_id": 3
-        }
-    ]
-    return ticket
+@app.get('/ticket')
+def get_ticket(eventContractAddress:str, jwt_token:str):
+    get_params = get_call_params('/ticket',params={
+    "eventContractAddress": eventContractAddress,
+    "walletPrivateKey": get_private_key(jwt_token=jwt_token)
+}, base_url=base_url)
+    return get_params
 
 @app.get("/event", response_model=List[Event])
 def get_event():
@@ -117,3 +119,21 @@ def get_event():
 def root():
     return {'working':'hard'}
 
+ALLOWED_ORIGINS = '*'
+
+# @app.middleware("https")
+# async def add_CORS_header(request, call_next):
+#     response = await call_next(request)
+#     response.headers['Access-Control-Allow-Origin'] = ALLOWED_ORIGINS
+#     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, DELETE, OPTIONS'
+#     response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+#     return response
+
+# # handle CORS preflight requests
+# @app.options('/{rest_of_path:path}')
+# async def preflight_handler(request, rest_of_path):
+#     response = Response()
+#     response.headers['Access-Control-Allow-Origin'] = ALLOWED_ORIGINS
+#     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, DELETE, OPTIONS'
+#     response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+#     return response

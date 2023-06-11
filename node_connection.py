@@ -31,7 +31,7 @@ def get_call_params(endpoint:str, params, base_url:str):
     if response.status_code == 200:
         return (response.json())
     else:
-        return {'fail':'big'}
+        raise TypeError
     
 header={
     'Content-Type': 'application/json'    

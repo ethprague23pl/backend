@@ -68,7 +68,42 @@ class Ticket(BaseModel):
     eventContractAddress: str
     walletPrivateKey: str
 
+class Sell(BaseModel):
+    jwt_token: str
+    eventContractAddress: str
+    tokenId: int
+    tokenPrice: float
+
+class Buy(BaseModel):
+    jwt_token: str
+    eventContractAddress: str
+    tokenId: int
+
+class Marketplace(BaseModel):
+    jwt_token: str
+    eventContractAddress: str
+    tokenId: int
+
+
 # POST
+@app.post('/marketplace/buy')
+async def buy_ticket(buy: Buy):
+    buy_body = {
+        "privateKey": get_private_key(buy.jwt_token),
+        "eventContractAddress": buy.eventContractAddress,
+        "tokenId": buy.tokenId,
+    }
+    return post_call(endpoint='/marketplace/buy', body=buy_body, header=header, base_url=base_url)
+
+@app.post('/marketplace/sell')
+async def sell_ticket(sell: Sell):
+    sell_body = {
+        "privateKey": get_private_key(sell.jwt_token),
+        "eventContractAddress": sell.eventContractAddress,
+        "tokenId": sell.tokenId,
+        "tokenPrice": sell.tokenPrice
+    }
+    return post_call(endpoint='/marketplace/sell', body=sell_body, header=header, base_url=base_url)
 
 @app.post('/ticket')
 async def buy_ticket(ticket: BuyTicket):
@@ -86,23 +121,40 @@ async def create_event(event: Event):
     return {"addres":event.contract_address}
 
 @app.post("/image", response_model=str)
-def create_picture(second_art: UploadFile = File(...)):
+async def create_picture(second_art: UploadFile = File(...)):
     """Takes image file, returns url to IPFS Storage"""
     ipfs_url = upload_file_on_ipfs(second_art.file)
     return ipfs_url
 
 @app.post("/account", response_model=LoginResponse)
-def crete_account(user: User):    
+async def crete_account(user: User):    
     user.wallet_address, user.wallet_private_key = get_call(endpoint="/account", header={'Content-Type': 'application/json'}, base_url=BASE_URL).values()
     return create_user(user = user.dict())
     
 
 @app.post("/login", response_model=LoginResponse)
-def log_to_account(user_email:str, user_password:str):
+async def log_to_account(user_email:str, user_password:str):
     return log_in(user_email=user_email, user_password=user_password)
 
 
 # GET
+@app.get('/list-tickets')
+def get_list_tickets(eventContractAddress:str, jwt_token:str):
+    get_params = get_call_params('/list-tickets', params={
+        'eventContractAddress': eventContractAddress,
+        'privateKey': get_private_key(jwt_token=jwt_token)
+    }, base_url=base_url)
+    return get_params
+
+@app.get('/marketplace')
+def get_marketplace(jwt_token:str, eventContractAddress:str, tokenId:int):
+        get_params = get_call_params('/marketplace', params={
+            'privateKey': get_private_key(jwt_token=jwt_token),
+            'eventContractAddress': eventContractAddress,
+            'tokenId': tokenId
+        }, base_url=base_url)
+        return get_params
+
 @app.get('/ticket')
 def get_ticket(eventContractAddress:str, jwt_token:str):
     get_params = get_call_params('/ticket',params={
@@ -119,21 +171,3 @@ def get_event():
 def root():
     return {'working':'hard'}
 
-ALLOWED_ORIGINS = '*'
-
-# @app.middleware("https")
-# async def add_CORS_header(request, call_next):
-#     response = await call_next(request)
-#     response.headers['Access-Control-Allow-Origin'] = ALLOWED_ORIGINS
-#     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, DELETE, OPTIONS'
-#     response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
-#     return response
-
-# # handle CORS preflight requests
-# @app.options('/{rest_of_path:path}')
-# async def preflight_handler(request, rest_of_path):
-#     response = Response()
-#     response.headers['Access-Control-Allow-Origin'] = ALLOWED_ORIGINS
-#     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, DELETE, OPTIONS'
-#     response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
-#     return response

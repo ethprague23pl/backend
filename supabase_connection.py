@@ -68,3 +68,7 @@ def get_events():
 
     response = supabase.table("events").select("*").execute()
     return response.data
+
+
+# 0x18d39edD4F8b82C2fa630783c70c688ec4D83839
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdGlAZ21haWwuY29tIiwiZXhwIjoxNzE4MjI4ODM2fQ.t6X1tNW1SA995rk2IRDqNQCr-Tie8T5Dy7uzgQ-u8xI

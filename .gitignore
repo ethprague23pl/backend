@@ -7,3 +7,4 @@ create_table.py
 fly.toml
 .dockerignore
 .gitignore
+env
